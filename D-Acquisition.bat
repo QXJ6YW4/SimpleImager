@@ -1,28 +1,36 @@
 @echo off
 ::Created by QXJ6YW4gRWxjaGlkYW5h
 ::Acquisition using FTK_Imager_CLI_V10
-::Version 3.1
+::Version 3.2
 REM Fill the information maked with REM in the lines below before sending the script for Acquisition
-@echo off
-net session >nul 2>&1
-echo Checking if script is run with Administrator privileges
-if %errorlevel% == 0 (goto :run) else (goto :1endA)
+	@echo off
+	net session >nul 2>&1
+	echo Checking if script is run with Administrator privileges
+	if %errorlevel% == 0 (goto :run) else (goto :1endA)
 
 :run
-title D-Acquisition.bat %1 
-cls
+	title D-Acquisition.bat %1 
+	cls
 
-mkdir %1\%computername%
-set /p stage= To acquire memory and disk image press 1 or to acquire only disk image press 2
-if %stage%==1 Goto stage1
-if %stage%==2 Goto stage2
+	mkdir %1\%computername%
+	set /p stage= To acquire memory and disk image press 1 or to acquire only disk image press 2 
+	if %stage%==1 Goto stage1
+	if %stage%==2 Goto stage2
 :stage1 
+:: Script Setup -----
+	if "%processor_architecture%" == "AMD64" (
+		set winpmem=winpmem_mini_x64_rc2
+		title  D-Acquisition.bat %1 64-bit
+	) else (
+		set winpmem=winpmem_mini_x64_rc2
+		title D-Acquisition.bat %1 32-bit
+	)
 :: Memory acquisition
 ::Creation of folder to store Memory Image
-mkdir %1\%computername%\Memory-Image
-echo ---Memory Collection Initiated--- >> %1\%computername%\%computername%-log.txt
+	mkdir %1\%computername%\Memory-Image
+	echo ---Memory Collection Initiated--- >> %1\%computername%\%computername%-log.txt
 echo %date% %time% - Memory-Image\%computername%-memdump.mem >> %1\%computername%\%computername%-log.txt
-%~dp0\winpmem_mini_x64_rc2.exe %1\%computername%\Memory-Image\%computername%-memdump.mem
+%~dp0\%winpmem%.exe %1\%computername%\Memory-Image\%computername%-memdump.mem
 echo ---Memory Collection Completed--- >> %1\%computername%\%computername%-log.txt
 echo %date% %time% - Memory-Image\%computername%-memdump.mem >> %1\%computername%\%computername%-log.txt
 ::echo[ >> %1:\%computername%\%computername%-log.txt
