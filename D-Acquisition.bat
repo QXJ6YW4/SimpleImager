@@ -1,5 +1,5 @@
 @echo off
-::Created by Arzan Elchidana
+::Created by QXJ6YW4gRWxjaGlkYW5h
 ::Acquisition using FTK_Imager_CLI_V10
 ::Version 3.1
 REM Fill the information maked with REM in the lines below before sending the script for Acquisition
