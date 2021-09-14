@@ -33,7 +33,7 @@ echo %date% %time% - Memory-Image\%computername%-memdump.mem >> %1\%computername
 %~dp0\%winpmem%.exe %1\%computername%\Memory-Image\%computername%-memdump.mem
 echo ---Memory Collection Completed--- >> %1\%computername%\%computername%-log.txt
 echo %date% %time% - Memory-Image\%computername%-memdump.mem >> %1\%computername%\%computername%-log.txt
-::echo[ >> %1:\%computername%\%computername%-log.txt
+
 :stage2
 :: Device information and Bitlocker details
 @echo DeviceInfo
@@ -153,7 +153,7 @@ if %DriveSel%==2 Goto Label2
 if %DriveSel%==3 Goto Label3
 if %DriveSel%==4 Goto Label4
 if %DriveSel%==5 Goto Label5
-::echo[ >> %1:\%computername%\%computername%-log.txt
+
 :Label0 
 ftkimager.exe \\.\PHYSICALDRIVE0 "%UserInputPath1%\%caseno%" --e01 --frag 2G --compress 5 --verify --case-number "%caseno%" --evidence-number "%caseno%" --description "%caseno%" --examiner "%Inv%" --notes "%notes%"
 goto :END
