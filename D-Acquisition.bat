@@ -145,7 +145,7 @@ echo %date% %time% - Disk-Image\%computername%-driveImage >> %1\%computername%\%
 ftkimager.exe --list-drives 
 
 echo Enter number for the drive to be imaged e.g. 0 for PhysicalDrive0 or 1 for PhysicalDrive1 
-Enter 0 or 1 or 2 for the drive to be acquired 
+echo Enter 0 or 1 or 2 for the drive to be acquired 
 set /p DriveSel=
 echo ---Imaging process begins--- >> %1\%computername%\%computername%-log.txt
 echo %date% %time% - Disk-Image\%computername%-drive%DriveSel% >> %1\%computername%\%computername%-log.txt
