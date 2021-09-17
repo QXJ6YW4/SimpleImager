@@ -13,7 +13,8 @@ REM Fill the information maked with REM in the lines below before sending the sc
 	cls
 
 	mkdir %1\%computername%
-	set /p stage= To acquire memory and disk image press 1 or to acquire only disk image press 2 
+	echo To acquire memory and disk image press 1 or to acquire only disk image press 2 
+	set /p stage= 
 	if %stage%==1 Goto stage1
 	if %stage%==2 Goto stage2
 :stage1 
@@ -144,7 +145,8 @@ echo %date% %time% - Disk-Image\%computername%-driveImage >> %1\%computername%\%
 ftkimager.exe --list-drives 
 
 echo Enter number for the drive to be imaged e.g. 0 for PhysicalDrive0 or 1 for PhysicalDrive1 
-set /p DriveSel= Enter 0 or 1 or 2 for the drive to be acquired 
+Enter 0 or 1 or 2 for the drive to be acquired 
+set /p DriveSel=
 echo ---Imaging process begins--- >> %1\%computername%\%computername%-log.txt
 echo %date% %time% - Disk-Image\%computername%-drive%DriveSel% >> %1\%computername%\%computername%-log.txt
 if %DriveSel%==0 Goto Label0
