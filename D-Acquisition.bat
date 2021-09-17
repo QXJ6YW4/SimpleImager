@@ -1,8 +1,7 @@
 @echo off
 ::Created by QXJ6YW4gRWxjaGlkYW5h
-::Acquisition using FTK_Imager_CLI_V10
-::Version 3.2
-REM Fill the information maked with REM in the lines below before sending the script for Acquisition
+::Acquisition using FTK_Imager_CLI_V3.1.1 (Aug 20 2012)
+::Version 3.4
 	@echo off
 	net session >nul 2>&1
 	echo Checking if script is run with Administrator privileges
