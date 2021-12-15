@@ -13,10 +13,13 @@ To view 'DeviceInfo.txt' information properly, in Notepad++ run Replace "\x00" w
 
 The command to execute the script is as follows:
 ```
-D-Acquisition.bat <"Drive letter where the image is to be collected">
+D-Acquisition.bat <"Drive letter where the image is to be collected OR the path where you want to store the image">
 ```
 
 Example 
 ```
 D-Acquisition.bat Z:
+
+D-Acquisition.bat D:\Work\Test_Image
+
 ```
