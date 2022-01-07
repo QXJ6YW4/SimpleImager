@@ -1,7 +1,8 @@
 @echo off
-::Created by QXJ6YW4gRWxjaGlkYW5h
+::Created by Base64-Encode -> QXJ6YW4gRWxjaGlkYW5h
+::Special thanks Mihir Kabani
 ::Acquisition using FTK_Imager_CLI_V3.1.1 (Aug 20 2012)
-::Version 3.4
+::Version 4.1
 	@echo off
 	net session >nul 2>&1
 	echo Checking if script is run with Administrator privileges
@@ -141,8 +142,12 @@ del /F /Q BitLock_Details.txt
 :: Acquisition begins
 echo ---Start of disk acquisition--- >> %1\%computername%\%computername%-log.txt
 echo %date% %time% - Disk-Image\%computername%-driveImage >> %1\%computername%\%computername%-log.txt
+echo Enter "a" to perform verification post imaging or "b" to only perform imaging without verification
+set /p Verify= 
+if %Verify%==a Goto LabelA#
+if %Verify%==b Goto LabelB#
+:LabelA#
 ftkimager.exe --list-drives 
-
 echo Enter number for the drive to be imaged e.g. 0 for PhysicalDrive0 or 1 for PhysicalDrive1 
 echo Enter 0 or 1 or 2 for the drive to be acquired 
 set /p DriveSel=
@@ -187,6 +192,54 @@ echo ---Acquisition Process Completed, safely unmount the drive---
 echo ---Acquisition Process Completed, safely unmount the drive--- >> %1\%computername%\%computername%-log.txt
 echo %date% %time% - Disk-Image\%computername%-drive%DriveSel% >> %1\%computername%\%computername%-log.txt
 goto :ENDF
+
+:LabelB#
+ftkimager.exe --list-drives 
+echo Enter number for the drive to be imaged e.g. 0 for PhysicalDrive0 or 1 for PhysicalDrive1 
+echo Enter 0 or 1 or 2 for the drive to be acquired 
+set /p DriveSel=
+echo ---Imaging process without verification begins--- >> %1\%computername%\%computername%-log.txt
+echo %date% %time% - Disk-Image\%computername%-drive%DriveSel% >> %1\%computername%\%computername%-log.txt
+if %DriveSel%==0 Goto Label0
+if %DriveSel%==1 Goto Label1
+if %DriveSel%==2 Goto Label2
+if %DriveSel%==3 Goto Label3
+if %DriveSel%==4 Goto Label4
+if %DriveSel%==5 Goto Label5
+
+:Label0 
+ftkimager.exe \\.\PHYSICALDRIVE0 "%UserInputPath1%\%caseno%" --e01 --frag 2G --compress 5 --case-number "%caseno%" --evidence-number "%caseno%" --description "%caseno%" --examiner "%Inv%" --notes "%notes%"
+goto :END
+
+:Label1
+ftkimager.exe \\.\PHYSICALDRIVE1 "%UserInputPath1%\%caseno%" --e01 --frag 2G --compress 5 --case-number "%caseno%" --evidence-number "%caseno%" --description "%caseno%" --examiner "%Inv%" --notes "%notes%"
+goto :END
+
+:Label2
+ftkimager.exe \\.\PHYSICALDRIVE2 "%UserInputPath1%\%caseno%" --e01 --frag 2G --compress 5 --case-number "%caseno%" --evidence-number "%caseno%" --description "%caseno%" --examiner "%Inv%" --notes "%notes%"
+goto :END
+
+:Label3
+ftkimager.exe \\.\PHYSICALDRIVE3 "%UserInputPath1%\%caseno%" --e01 --frag 2G --compress 5 --case-number "%caseno%" --evidence-number "%caseno%" --description "%caseno%" --examiner "%Inv%" --notes "%notes%"
+goto :END
+
+:Label4
+ftkimager.exe \\.\PHYSICALDRIVE4 "%UserInputPath1%\%caseno%" --e01 --frag 2G --compress 5 --case-number "%caseno%" --evidence-number "%caseno%" --description "%caseno%" --examiner "%Inv%" --notes "%notes%"
+goto :END
+
+:Label5
+ftkimager.exe \\.\PHYSICALDRIVE5 "%UserInputPath1%\%caseno%" --e01 --frag 2G --compress 5 --case-number "%caseno%" --evidence-number "%caseno%" --description "%caseno%" --examiner "%Inv%" --notes "%notes%"
+goto :END
+:END
+echo ---Imaging process completed without verification---
+echo ---Imaging process completed without verification--- >> %1\%computername%\%computername%-log.txt
+echo %date% %time% - Disk-Image\%computername%-drive%DriveSel% >> %1\%computername%\%computername%-log.txt
+::Script completed
+echo ---Acquisition Process Completed, safely unmount the drive---
+echo ---Acquisition Process Completed, safely unmount the drive--- >> %1\%computername%\%computername%-log.txt
+echo %date% %time% - Disk-Image\%computername%-drive%DriveSel% >> %1\%computername%\%computername%-log.txt
+goto :ENDF
+
 :1endA
 echo Ensure CMD is runas Administrator
 :ENDF
