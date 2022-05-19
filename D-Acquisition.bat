@@ -3,7 +3,7 @@
 rem code add
 setlocal EnableDelayedExpansion
 
-::Created by Base64-Encode -> QXJ6YW4gRWxjaGlkYW5h
+::Created by Encode -> QXJ6YW4gRWxjaGlkYW5h
 ::Special thanks Mihir Kabani and Yasuki Kouno
 ::Acquisition using FTK_Imager_CLI_V3.1.1 (Aug 20 2012)
 ::Version 4.2
@@ -48,7 +48,7 @@ rem code add：Checking if the folder already exists.
 		set winpmem=winpmem_mini_x64_rc2
 		title  D-Acquisition.bat %1 64-bit
 	) else (
-		set winpmem=winpmem_mini_x64_rc2
+		set winpmem=winpmem_mini_x86.exe
 		title D-Acquisition.bat %1 32-bit
 	)
 ::Memory acquisition
