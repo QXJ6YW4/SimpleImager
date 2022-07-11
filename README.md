@@ -1,4 +1,4 @@
-### SimpleImager
+### SimpleImager V4.3
 This script has been created to ease out the process of Acquisition
 Points to be considered before running the script:
 ```

@@ -6,7 +6,7 @@ setlocal EnableDelayedExpansion
 ::Created by Encode -> QXJ6YW4gRWxjaGlkYW5h
 ::Special thanks Mihir Kabani and Yasuki Kouno
 ::Acquisition using FTK_Imager_CLI_V3.1.1 (Aug 20 2012)
-::Version 4.2
+::Version 4.3
 	@echo off
 	cls
 	net session >nul 2>&1
@@ -48,7 +48,7 @@ rem code add：Checking if the folder already exists.
 		set winpmem=winpmem_mini_x64_rc2
 		title  D-Acquisition.bat %1 64-bit
 	) else (
-		set winpmem=winpmem_mini_x86.exe
+		set winpmem=winpmem_mini_x86
 		title D-Acquisition.bat %1 32-bit
 	)
 ::Memory acquisition
@@ -182,7 +182,7 @@ rem Refactoring
 	echo Enter "a" to perform verification post imaging or "b" to only perform imaging without verification
 	set /p Verify= 
 
-
+:: Verification begins
 rem Refactoring
 	if %Verify%==a (
 		set v=--verify
