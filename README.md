@@ -1,4 +1,4 @@
-### SimpleImager V4.3
+## **SimpleImager V4.3**
 This script has been created to ease out the process of Acquisition
 Points to be considered before running the script:
 ```
@@ -12,6 +12,7 @@ Points to be considered before running the script:
 8. The script also collects information on the BitLocker Key if the host drive is encrypted with bitlocker
 ```
 
+## **Note**
 To view 'DeviceInfo.txt' information properly, in Notepad++ run Replace "\x00" with ""(blank) and select search mode as Extended, this will show the contents in a proper manner without the Null character 
 
 The command to execute the script is as follows:
@@ -19,7 +20,7 @@ The command to execute the script is as follows:
 D-Acquisition.bat <"Drive letter where the image is to be collected OR the path where you want to store the image">
 ```
 
-Example 
+## **Example** 
 ```
 D-Acquisition.bat Z:
 
