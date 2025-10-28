@@ -6,7 +6,7 @@ setlocal EnableDelayedExpansion
 ::Created by Encode -> QXJ6YW4gRWxjaGlkYW5h
 ::Special thanks Mihir Kabani and Yasuki Kouno
 ::Acquisition using FTK_Imager_CLI_V3.1.1 (Aug 20 2012)
-::Version 4.3
+::Version 4.4
 	@echo off
 	cls
 	net session >nul 2>&1
@@ -249,4 +249,5 @@ rem code add:Redo on error
 
 :ENDF
 	pause
+
 
