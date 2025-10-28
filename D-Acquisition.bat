@@ -126,8 +126,7 @@ rem Refactoring
 ::Get information for Notes in FTK Imager
 	echo ---Getting additional details for the system and disk--- 
 	@echo off
-	for /f "skip=1 delims=" %%h in ('wmic computersystem get name') do (
-		set hname=%%h
+	for /f "usebackq" %%h in (`powershell -command "$env:COMPUTERNAME"`) do set hname=%%h
 		goto :H
 	)
 :H
@@ -250,3 +249,4 @@ rem code add:Redo on error
 
 :ENDF
 	pause
+
