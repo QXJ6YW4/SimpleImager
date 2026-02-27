@@ -6,10 +6,19 @@ setlocal EnableDelayedExpansion
 ::Created by Encode -> QXJ6YW4gRWxjaGlkYW5h
 ::Special thanks Mihir Kabani and Yasuki Kouno
 ::Acquisition using FTK_Imager_CLI_V3.1.1 (Aug 20 2012)
-::Version 4.4
+::Version 4.5
+
+color 0A
+
+echo  ------------------------------------------------------------
+echo   SIMPLE IMAGER
+echo   Forensic Acquisition Utility for Meoery and Disk
+echo  ------------------------------------------------------------
+
 	@echo off
 	cls
 	net session >nul 2>&1
+	color 0E
 	echo Checking if script is run with Administrator privileges
 	if %errorlevel% == 0 (goto :run) else (goto :1endA)
 :run
@@ -17,6 +26,7 @@ setlocal EnableDelayedExpansion
 	echo.
 
 rem code add：Checking if arguments are given to the script.
+	color 0E
 	echo Checking if exists arguments
 	if "%1%"=="" goto 1endB
 	echo OK
@@ -28,13 +38,13 @@ rem code add：Checking if arguments are given to the script.
 
 rem code add：Checking if the folder already exists.
 	if not exist %1\%computername% (goto :run2)
-
+	color 0E
 	echo The folder already exists. Continue?
 	choice
 	if %errorlevel%==2 (goto :1endC)
 	
 
-
+color 0A
 :run2
 	mkdir %1\%computername%
 	echo To acquire memory and disk image press 1 or to acquire only disk image press 2 
@@ -53,6 +63,10 @@ rem code add：Checking if the folder already exists.
 	)
 ::Memory acquisition
 ::Creation of folder to store Memory Image
+	color 0A
+	echo =====================================================
+	echo  MEMORY ACQUISITION PHASE
+	echo =====================================================
 	mkdir %1\%computername%\Memory-Image
 	echo ---Memory Collection Initiated--- >> %1\%computername%\%computername%-log.txt
 	echo %date% %time% - Memory-Image\%computername%-memdump.mem >> %1\%computername%\%computername%-log.txt
@@ -176,6 +190,10 @@ rem Refactoring
 
 
 :: Acquisition begins
+	color 0A
+	echo =====================================================
+	echo  DISK ACQUISITION PHASE
+	echo =====================================================
 	echo ---Start of disk acquisition--- >> %1\%computername%\%computername%-log.txt
 	echo %date% %time% - Disk-Image\%computername%-driveImage >> %1\%computername%\%computername%-log.txt
 	echo Enter "a" to perform verification post imaging or "b" to only perform imaging without verification
