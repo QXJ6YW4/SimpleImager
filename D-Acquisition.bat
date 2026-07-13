@@ -231,7 +231,7 @@ rem Refactoring
 
 :StartFTK
 rem code add:[%~dp0] just in case.	
-	%~dp0ftkimager.exe --list-drives 
+	%cd%\ftkimager.exe --list-drives 
 
 :SelectDrive
 	echo Enter number for the drive to be imaged e.g. 0 for PhysicalDrive0 or 1 for PhysicalDrive1 
@@ -247,7 +247,7 @@ rem code add:input check
 	echo %msg1% >> %1\%computername%\%computername%-log.txt
 	echo %date% %time% - Disk-Image\%computername%-drive%DriveSel% >> %1\%computername%\%computername%-log.txt
 
-	%~dp0ftkimager.exe \\.\PHYSICALDRIVE%DriveSel% "%UserInputPath1%\%caseno%" --e01 --frag 2G --compress 5 --case-number "%caseno%" --evidence-number "%caseno%" --description "%caseno%" --examiner "%Inv%" --notes "%notes%" %v%
+	%cd%\ftkimager.exe \\.\PHYSICALDRIVE%DriveSel% "%UserInputPath1%\%caseno%" --e01 --frag 2G --compress 5 --case-number "%caseno%" --evidence-number "%caseno%" --description "%caseno%" --examiner "%Inv%" --notes "%notes%" %v%
 
 rem code add:Redo on error
 	if %errorlevel% == 0 (goto :EndFTK)
