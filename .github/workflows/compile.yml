@@ -13,13 +13,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Compile Native C# Wrapper to EXE
+        shell: bash
         run: |
-          # 1. Read batch file and convert to Base64 to safely embed it
-          $batContent = Get-Content -Path "D-Acquisition.bat" -Raw
-          $base64Bat = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($batContent))
+          # 1. Convert batch file to base64
+          BAT_B64=$(base64 D-Acquisition.bat | tr -d '\n')
           
-          # 2. Create C# source code for the wrapper
-          $csharpCode = @'
+          # 2. Write C# safely with no variable evaluation conflicts
+          cat << 'EOF' > Wrapper.cs
           using System;
           using System.Diagnostics;
           using System.IO;
@@ -27,28 +27,23 @@ jobs:
 
           class Program {
               static void Main(string[] args) {
-                  // Get the directory where the EXE is currently sitting
                   string currentDir = AppDomain.CurrentDomain.BaseDirectory;
-                  
-                  // Create a temporary path to drop the batch file into securely
                   string tempPath = Path.Combine(Path.GetTempPath(), "SimpleImager_" + Guid.NewGuid().ToString().Substring(0,8) + ".bat");
                   
                   try {
-                      // Decrypt and write the embedded batch script
                       File.WriteAllText(tempPath, Encoding.UTF8.GetString(Convert.FromBase64String("INSERT_BASE64_HERE")));
                       
                       ProcessStartInfo psi = new ProcessStartInfo("cmd.exe");
-                      
-                      // Pass any arguments (like a drive letter) straight through to the batch file
                       string argsString = "";
                       if (args.Length > 0) {
                           argsString = string.Join(" ", args);
                       }
                       
-                      psi.Arguments = "/c \"\"" + tempPath + "\" " + argsString + "\"";
+                      // This forces the script to run in the folder containing ftkimager.exe
+                      psi.Arguments = "/c \"cd /d \"" + currentDir + "\" & \"" + tempPath + "\" " + argsString + "\"";
                       psi.WorkingDirectory = currentDir;
                       psi.UseShellExecute = true;
-                      psi.Verb = "runas"; // Forces Administrator rights
+                      psi.Verb = "runas"; 
                       
                       Process p = Process.Start(psi);
                       p.WaitForExit();
@@ -57,22 +52,21 @@ jobs:
                       Console.WriteLine("Execution Error: " + ex.Message);
                   }
                   finally {
-                      // Clean up the temporary batch file immediately after it finishes
                       if (File.Exists(tempPath)) {
                           File.Delete(tempPath);
                       }
                   }
               }
           }
-          '@
+          EOF
           
-          $csharpCode = $csharpCode.Replace("INSERT_BASE64_HERE", $base64Bat)
-          Set-Content -Path "Wrapper.cs" -Value $csharpCode
+          # 3. Insert the batch code into the C# wrapper
+          sed -i "s|INSERT_BASE64_HERE|$BAT_B64|g" Wrapper.cs
           
-          # 3. Find the built-in Windows C# Compiler (csc.exe) and compile it
-          $csc = (Get-ChildItem -Path "C:\Windows\Microsoft.NET\Framework64" -Filter "csc.exe" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName
-          & $csc /nologo /out:SimpleImager.exe /target:exe Wrapper.cs
-          
+          # 4. Find the built-in C# compiler and build the EXE
+          CSC_PATH=$(find /c/Windows/Microsoft.NET/Framework64 -name "csc.exe" | sort -r | head -n 1)
+          "$CSC_PATH" -nologo -out:SimpleImager.exe -target:exe Wrapper.cs
+
       - name: Upload Ready-to-Sell Package
         uses: actions/upload-artifact@v4
         with:
