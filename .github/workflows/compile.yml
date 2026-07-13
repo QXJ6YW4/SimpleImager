@@ -1,0 +1,29 @@
+name: Build SimpleImager EXE
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download Bat-To-Exe Compiler
+        run: Invoke-WebRequest -Uri "https://github.com/tokyoneon/B2E/raw/master/Bat_To_Exe_Converter_(x64).exe" -OutFile "Compiler.exe"
+
+      - name: Compile D-Acquisition.bat to EXE
+        run: .\Compiler.exe /bat D-Acquisition.bat /exe SimpleImager.exe /x64 /admin
+
+      - name: Upload Ready-to-Sell Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: SimpleImager-Com
+          path: |
+            SimpleImager.exe
+            *.dll
+            ftkimager.exe
+            winpmem*.exe
