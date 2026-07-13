@@ -12,18 +12,69 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Download Bat-To-Exe Compiler
-        run: Invoke-WebRequest -Uri "https://github.com/tokyoneon/B2E/raw/master/Bat_To_Exe_Converter_(x64).exe" -OutFile "Compiler.exe"
+      - name: Compile Native C# Wrapper to EXE
+        run: |
+          # 1. Read batch file and convert to Base64 to safely embed it
+          $batContent = Get-Content -Path "D-Acquisition.bat" -Raw
+          $base64Bat = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($batContent))
+          
+          # 2. Create C# source code for the wrapper
+          $csharpCode = @'
+          using System;
+          using System.Diagnostics;
+          using System.IO;
+          using System.Text;
 
-      - name: Compile D-Acquisition.bat to EXE
-        run: .\Compiler.exe /bat D-Acquisition.bat /exe SimpleImager.exe /x64 /admin
-
+          class Program {
+              static void Main(string[] args) {
+                  // Get the directory where the EXE is currently sitting
+                  string currentDir = AppDomain.CurrentDomain.BaseDirectory;
+                  
+                  // Create a temporary path to drop the batch file into securely
+                  string tempPath = Path.Combine(Path.GetTempPath(), "SimpleImager_" + Guid.NewGuid().ToString().Substring(0,8) + ".bat");
+                  
+                  try {
+                      // Decrypt and write the embedded batch script
+                      File.WriteAllText(tempPath, Encoding.UTF8.GetString(Convert.FromBase64String("INSERT_BASE64_HERE")));
+                      
+                      ProcessStartInfo psi = new ProcessStartInfo("cmd.exe");
+                      
+                      // Pass any arguments (like a drive letter) straight through to the batch file
+                      string argsString = "";
+                      if (args.Length > 0) {
+                          argsString = string.Join(" ", args);
+                      }
+                      
+                      psi.Arguments = "/c \"\"" + tempPath + "\" " + argsString + "\"";
+                      psi.WorkingDirectory = currentDir;
+                      psi.UseShellExecute = true;
+                      psi.Verb = "runas"; // Forces Administrator rights
+                      
+                      Process p = Process.Start(psi);
+                      p.WaitForExit();
+                  }
+                  catch (Exception ex) {
+                      Console.WriteLine("Execution Error: " + ex.Message);
+                  }
+                  finally {
+                      // Clean up the temporary batch file immediately after it finishes
+                      if (File.Exists(tempPath)) {
+                          File.Delete(tempPath);
+                      }
+                  }
+              }
+          }
+          '@
+          
+          $csharpCode = $csharpCode.Replace("INSERT_BASE64_HERE", $base64Bat)
+          Set-Content -Path "Wrapper.cs" -Value $csharpCode
+          
+          # 3. Find the built-in Windows C# Compiler (csc.exe) and compile it
+          $csc = (Get-ChildItem -Path "C:\Windows\Microsoft.NET\Framework64" -Filter "csc.exe" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName
+          & $csc /nologo /out:SimpleImager.exe /target:exe Wrapper.cs
+          
       - name: Upload Ready-to-Sell Package
         uses: actions/upload-artifact@v4
         with:
-          name: SimpleImager-Com
-          path: |
-            SimpleImager.exe
-            *.dll
-            ftkimager.exe
-            winpmem*.exe
+          name: SimpleImager-Commercial
+          path: SimpleImager.exe
